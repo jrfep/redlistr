@@ -23,34 +23,24 @@ getArea <- function(x, value.to.count){
     stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
   }
   if(class(x) == 'RasterLayer'){
-    if(length(raster::unique(x)) != 1 & missing(value.to.count)){
-      warning("The input raster is not binary, counting ALL non NA cells\n")
       cell.res <- res(x)
       cell.width <- cell.res[1]
       x.df <- plyr::count(values(x))
-      n.cell <- sum(x.df[which(!is.na(x.df[, 1])), ]$freq)
+      
+      if(length(raster::unique(x)) != 1 & missing(value.to.count)){
+          warning("The input raster is not binary, counting ALL non NA cells\n")
+          n.cell <- sum(x.df[which(!is.na(x.df[, 1])), ]$freq)
+      }
+      else if(length(raster::unique(x)) != 1){
+          n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
+      }
+      else{
+          n.cell <- x.df[which(x.df[, 1] == TRUE), ]$freq
+      }
       aream2 <- (cell.width * cell.width) * n.cell
       areakm2 <- aream2/1000000
       return (areakm2)
-    }
-    else if(length(raster::unique(x)) != 1){
-      cell.res <- res(x)
-      cell.width <- cell.res[1]
-      x.df <- plyr::count(values(x))
-      n.cell <- x.df[which(x.df[, 1] == value.to.count), ]$freq
-      aream2 <- (cell.width * cell.width) * n.cell
-      areakm2 <- aream2/1000000
-      return (areakm2)
-    }
-    else{
-      cell.res <- res(x)
-      cell.width <- cell.res[1]
-      x.df <- plyr::count(values(x))
-      n.cell <- x.df[which(x.df[, 1] == TRUE), ]$freq
-      aream2 <- (cell.width * cell.width) * n.cell
-      areakm2 <- aream2/1000000
-      return (areakm2)
-    }
+      
   } else if(class(x) == 'SpatialPolygons'){
     areakm2 <- rgeos::gArea(x) / 1000000
     return(areakm2)
