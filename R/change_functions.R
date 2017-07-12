@@ -20,11 +20,11 @@
 
 getArea <- function(x, value.to.count){
   if(isLonLat(x)){
-    stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
+      stop('Input raster has a longitude/latitude CRS.\nPlease reproject to a projected coordinate system')
+      ## try with raster::area()
   }
   if(class(x) == 'RasterLayer'){
       cell.res <- res(x)
-      cell.width <- cell.res[1]
       x.df <- plyr::count(values(x))
       
       if(length(raster::unique(x)) != 1 & missing(value.to.count)){
@@ -37,8 +37,8 @@ getArea <- function(x, value.to.count){
       else{
           n.cell <- x.df[which(x.df[, 1] == TRUE), ]$freq
       }
-      aream2 <- (cell.width * cell.width) * n.cell
-      areakm2 <- aream2/1000000
+      aream2 <- (prod(cell.res)) * n.cell
+      areakm2 <- aream2/1e6
       return (areakm2)
       
   } else if(class(x) == 'SpatialPolygons'){
