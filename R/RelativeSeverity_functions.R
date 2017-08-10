@@ -53,5 +53,7 @@ RelativeSeverityPlot <- function(ecosystem.data,
     rect(-1*thresholds[4],thresholds[3]/100,-1*thresholds[3],thresholds[4]/100,col="yellow")
     rect(-1*thresholds[3],thresholds[4]/100,-1*thresholds[2],thresholds[5]/100,col="yellow")
     lines(ecdf(-1*sev.vals),col="maroon",lty=3,lwd=1)
-    text(c(-1*thresholds[4],-1*thresholds[3],-1*thresholds[2]),rslt[1:3],sprintf("%0.1f %%",rslt[1:3]*100),adj=-.1,font=2,cex=1.2)
+    text(c(-1*thresholds[2:4]),RSE(-1*thresholds[2:4]),sprintf("%0.1f %%",RSE(-1*thresholds[2:4])*100),adj=-.1,font=2,cex=1.2)
 }
+
+
